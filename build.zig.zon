@@ -1,0 +1,6 @@
+.{
+    .name = "swift_lib",
+    .version = "0.1.0",
+    .minimum_zig_version = "0.11.0",
+    .paths = .{ "src", "build.zig", "build.zig.zon" },
+}
