@@ -60,8 +60,8 @@ pub fn resize_or_alloc(self: Allocator, comptime T: type, buf: []T, new_size: us
 }
 
 /// Duplicates the slice.
-pub fn dupe(self: Allocator, buf: anytype) AllocErr![]@TypeOf(buf) {
-    const new_buf = try self.alloc(@TypeOf(buf), buf.len);
+pub fn dupe(self: Allocator, comptime T: type, buf: []const T) AllocErr![]T {
+    const new_buf = try self.alloc(T, buf.len);
     @memcpy(new_buf, buf);
 
     return new_buf;
