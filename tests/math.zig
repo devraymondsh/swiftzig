@@ -1,7 +1,7 @@
 const std = @import("std");
 const swift_lib = @import("swift_lib");
 
-test "powerOfTwo" {
+test "PowerOfTwo" {
     try std.testing.expect(swift_lib.math.ceilPowerOfTwo(@as(u8, 6)) == 8);
     try std.testing.expect(swift_lib.math.ceilPowerOfTwo(@as(i8, 8)) == 8);
     try std.testing.expect(swift_lib.math.ceilPowerOfTwo(@as(u16, 13)) == 16);
@@ -22,7 +22,7 @@ test "powerOfTwo" {
     try std.testing.expect(!swift_lib.math.isPowerOfTwo(129));
 }
 
-test "alignForwardAndBackward" {
+test "AlignForwardAndBackward" {
     try std.testing.expect(swift_lib.math.alignBackward(usize, 29, 8) == 24);
     try std.testing.expect(swift_lib.math.alignBackward(usize, 32, 8) == 32);
     try std.testing.expect(swift_lib.math.alignBackward(usize, 65, 2) == 64);

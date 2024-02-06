@@ -11,7 +11,7 @@ This is a std library for Zig that's focused on performance and minimalism. It c
         // swift_lib v0.3.0
         .swift_lib = .{
             .url = "https://github.com/devraymondsh/swift_lib/archive/refs/tags/v0.3.0.tar.gz",
-            .hash = "1220ccbb0d13f8f76f67de32d6b61e75e00b304074fe4c375e1a98633b235c118082",
+            .hash = "12201501ad4ac2d6827b2a293219ec8a49d7d12239895f17ad00c6209b0418dad3fe",
         },
     },
 }

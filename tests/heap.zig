@@ -1,6 +1,23 @@
 const std = @import("std");
 const swift_lib = @import("swift_lib");
 
+test "AllocatorDuplicate" {
+    var pages1 = try swift_lib.heap.PageAllocator.init(2);
+    defer pages1.deinit();
+    var arena1 = swift_lib.heap.ArenaAllocator.init(pages1.mem);
+    const allocator1 = arena1.allocator();
+    _ = try allocator1.alloc(u128, 12);
+    _ = try allocator1.alloc(u64, 14);
+
+    var pages2 = try swift_lib.heap.PageAllocator.init(4);
+    defer pages2.deinit();
+    var arena2 = swift_lib.heap.ArenaAllocator.init(pages2.mem);
+    const allocator2 = arena2.allocator();
+
+    const duplicate = try allocator2.dupe(u8, pages1.mem);
+    try std.testing.expect(swift_lib.mem.eql(u8, pages1.mem, duplicate));
+}
+
 test "PageAllocator" {
     var pages = try swift_lib.heap.PageAllocator.init(84);
     defer pages.deinit();
