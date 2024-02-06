@@ -1,0 +1,13 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug heap tests",
+            "program": "${workspaceFolder}/zig-out/bin/heap_tests",
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        }
+    ]
+}

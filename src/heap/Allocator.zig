@@ -17,13 +17,13 @@ ptr: *anyopaque,
 vtable: *const Vtable,
 
 /// Aligns forward all types to make everything align on 8 bytes.
-fn align_len(comptime T: type, len: usize) usize {
-    return math.alignForward(usize, len * @sizeOf(T), 8);
+fn align_len(size: comptime_int, len: usize) usize {
+    return math.alignForward(usize, size * len, 8);
 }
 
 /// Allocates a slice. Types that aren't aligned on 8 bytes will be stored with padding.
 pub fn alloc(self: Allocator, comptime T: type, len: usize) AllocErr![]T {
-    if (self.vtable.alloc(self.ptr, align_len(T, len))) |buf| {
+    if (self.vtable.alloc(self.ptr, align_len(@sizeOf(T), len))) |buf| {
         return @as([*]T, @ptrFromInt(@intFromPtr(buf)))[0..len];
     }
 
@@ -41,7 +41,7 @@ pub fn resize(self: Allocator, comptime T: type, buf: []T, new_len: usize) Resiz
         self.ptr,
         @as([*]align(8) u8, @ptrFromInt(@intFromPtr(buf.ptr))),
         buf.len,
-        align_len(T, new_len),
+        align_len(@sizeOf(T), new_len),
     )) return buf[0..new_len];
 
     return ResizeErr.FailedToResize;
@@ -52,7 +52,7 @@ pub fn resize_or_alloc(self: Allocator, comptime T: type, buf: []T, new_size: us
     if (self.resize(T, buf, new_size)) |resized| {
         return resized;
     } else |_| {
-        self.free(T, buf);
+        self.free(buf);
         const allocated = try self.alloc(T, new_size);
         @memcpy(allocated[0..buf.len], buf);
         return allocated;
@@ -60,18 +60,18 @@ pub fn resize_or_alloc(self: Allocator, comptime T: type, buf: []T, new_size: us
 }
 
 /// Duplicates the slice.
-pub fn dupe(self: Allocator, comptime T: type, buf: []const T) AllocErr![]T {
-    const new_buf = try self.alloc(T, buf.len);
+pub fn dupe(self: Allocator, buf: anytype) AllocErr![]@TypeOf(buf) {
+    const new_buf = try self.alloc(@TypeOf(buf), buf.len);
     @memcpy(new_buf, buf);
 
     return new_buf;
 }
 
 /// Frees the slice.
-pub fn free(self: Allocator, comptime T: type, buf: []T) void {
+pub fn free(self: Allocator, buf: anytype) void {
     self.vtable.free(
         self.ptr,
         @as([*]align(8) u8, @ptrFromInt(@intFromPtr(buf.ptr))),
-        align_len(T, buf.len),
+        align_len(@sizeOf(@typeInfo(@TypeOf(buf)).Pointer.child), buf.len),
     );
 }

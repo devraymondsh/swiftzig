@@ -3,22 +3,23 @@ const os = @import("../os/os.zig");
 const Allocator = @import("Allocator.zig");
 const math = @import("../math.zig");
 
+const PageAllocatorInitError = error{
+    FailedToInitialize,
+};
+
 mem: []align(os.page_size) u8,
 
 /// A simple page allocator.
 const PageAllocator = @This();
 
-fn unlikely() void {
-    @setCold(true);
-}
-
 /// Allocates n pages.
-pub fn init(n: usize) ?PageAllocator {
+pub fn init(n: usize) PageAllocatorInitError!PageAllocator {
     @setRuntimeSafety(false);
+    const len = n * os.page_size;
     if (builtin.os.tag == .linux) {
         const mmapsys_res = os.linux.syscall(.mmap, .{
             @as(usize, 0),
-            n * os.page_size,
+            len,
             os.linux.PROT.READ | os.linux.PROT.WRITE,
             os.linux.MAP.ANONYMOUS | os.linux.MAP.PRIVATE,
             0,
@@ -30,11 +31,11 @@ pub fn init(n: usize) ?PageAllocator {
                 .mem = @as(
                     [*]align(os.page_size) u8,
                     @ptrFromInt(mmapsys_res),
-                )[0..mmapsys_res],
+                )[0..len],
             };
         }
 
-        return null;
+        return PageAllocatorInitError.FailedToInitialize;
     } else @compileError("Unsupported OS/CPU!");
 }
 

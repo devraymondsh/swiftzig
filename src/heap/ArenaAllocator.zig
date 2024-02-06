@@ -4,7 +4,7 @@ const Allocator = @import("Allocator.zig");
 mem: []u8,
 pos: usize = 0,
 
-/// A simple Arena implementation.
+/// A simple arena implementation.
 const ArenaAllocator = @This();
 
 pub fn unlikely() void {
@@ -39,12 +39,10 @@ fn resize(ctx: *anyopaque, buf: [*]align(8) u8, len: usize, new_len: usize) bool
     if (@intFromPtr(self.mem[self.pos..].ptr) == (@intFromPtr(buf) + len)) {
         const new_pos = self.pos + (new_len - len);
 
-        if (new_pos <= self.mem.len) {
+        if (new_pos < self.mem.len) {
             self.pos = new_pos;
             return true;
-        } else {
-            unlikely();
-        }
+        } else unlikely();
     }
 
     return false;

@@ -10,7 +10,12 @@ pub fn ArrayList(comptime T: type) type {
 
         /// Initializes an ArrayList.
         pub fn init(allocator: Allocator) Allocator.AllocErr!ArrayListInner {
-            return ArrayListInner{ .allocator = allocator, .mem = try allocator.alloc(T, 10), .pos = 0 };
+            return init_with_capacity(allocator, 10);
+        }
+
+        /// Initializes an ArrayList with an inital capacity.
+        pub fn init_with_capacity(allocator: Allocator, capacity: usize) Allocator.AllocErr!ArrayListInner {
+            return ArrayListInner{ .allocator = allocator, .mem = try allocator.alloc(T, capacity), .pos = 0 };
         }
 
         /// Pushes a new item to the ArrayList.
