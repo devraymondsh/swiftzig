@@ -8,10 +8,10 @@ This is a std library for Zig that's focused on performance and minimalism. It c
     .name = "<your_apps_name>",
     .version = "<your_apps_vesion>",
     .dependencies = .{
-        // swift_lib v0.1.0
+        // swift_lib v0.2.0
         .swift_lib = .{
-            .url = "https://github.com/devraymondsh/swift_lib/archive/refs/tags/v0.1.0.tar.gz",
-            .hash = "1220eac29cedd4800a298a1eac86629838d3f158cb4046cc1d34c614e9bd97f6f674",
+            .url = "https://github.com/devraymondsh/swift_lib/archive/refs/tags/v0.2.0.tar.gz",
+            .hash = "12201a5fc85273750753dbe530f7c9a2a231049ebc79683e0e6abc3f6747f3b68a32",
         },
     },
 }
