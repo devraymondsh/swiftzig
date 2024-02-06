@@ -9,13 +9,5 @@
             "cwd": "${workspaceFolder}",
             "program": "${workspaceFolder}/zig-out/bin/heap_tests"
         },
-        {
-            "args": [],
-            "type": "lldb",
-            "request": "launch",
-            "name": "Debug math tests",
-            "cwd": "${workspaceFolder}",
-            "program": "${workspaceFolder}/zig-out/bin/math_tests"
-        },
     ]
 }

@@ -36,17 +36,28 @@ pub fn start() callconv(.C) noreturn {
         while (@intFromPtr(vars[len]) != 0) len +%= 1;
         break :blk_1 len;
     };
-    @call(.auto, root.main, .{ args[0..args_len], vars[0..vars_len] });
+
+    const main_params = switch (@typeInfo(@TypeOf(root.main)).Fn.params.len) {
+        0 => .{},
+        1 => .{args[0..args_len]},
+        2 => .{ args[0..args_len], vars[0..vars_len] },
+        else => @compileError("Invalid number of arguments for the main function!"),
+    };
+    switch (@typeInfo(@TypeOf(root.main)).Fn.return_type.?) {
+        void => @call(.auto, root.main, main_params),
+        u8 => os.exit(@call(.auto, root.main, main_params)),
+        else => @compileError("Invalid return type for the main function!"),
+    }
 
     os.exit(0);
     unreachable;
 }
 
-/// The most simple panic implementation
+/// The most simple panic implementation.
 pub fn panic(msg: []const u8, _: @TypeOf(@errorReturnTrace()), _: ?usize) noreturn {
     @setCold(true);
     var bufprinter = printer.BufPrinter(1024).init();
-    bufprinter.println_many(3, .{ "TurboTidy paniced: ", msg });
+    bufprinter.println_many(2, .{ "TurboTidy paniced: ", msg });
     bufprinter.flush();
 
     os.exit(1);
