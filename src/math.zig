@@ -1,4 +1,4 @@
-/// Aligns backward a number.
+/// Aligns the given number backward.
 pub fn alignBackward(comptime T: type, addr: T, alignment: T) T {
     // TODO: Panic
     // assert(isValidAlignGeneric(T, alignment));
@@ -9,7 +9,7 @@ pub fn alignBackward(comptime T: type, addr: T, alignment: T) T {
     return addr & ~(alignment - 1);
 }
 
-/// Aligns forward a number.
+/// Aligns the given number forward.
 pub fn alignForward(comptime T: type, addr: T, alignment: T) T {
     // TODO: Panic
     // assert(isValidAlignGeneric(T, alignment));
@@ -17,43 +17,47 @@ pub fn alignForward(comptime T: type, addr: T, alignment: T) T {
     return alignBackward(T, addr + (alignment - 1), alignment);
 }
 
+/// Checks if the given number is a power of two.
+pub fn isPowerOfTwo(num: anytype) bool {
+    return (num != 0) and ((num & (num - 1)) == 0);
+}
+
 /// Rounds to the next power of two.
-pub fn ceilPowerOfTwo(comptime T: type, n_arg: T) T {
-    var n = n_arg;
+pub fn ceilPowerOfTwo(num: anytype) @TypeOf(num) {
+    var n = num;
     n -= 1;
 
-    comptime var elements: [7]?usize = undefined;
+    comptime var masks: [7]?usize = .{ null, null, null, null, null, null, null };
     comptime {
-        elements[0] = 1;
-        elements[1] = 2;
-        elements[2] = 4;
-        @memset(elements, null);
-        switch (T) {
-            u8 | i8 => {},
-            u16 | i16 => {
-                elements[3] = 8;
+        masks[0] = 1;
+        masks[1] = 2;
+        masks[2] = 4;
+        switch (@TypeOf(num)) {
+            u8, i8 => {},
+            u16, i16 => {
+                masks[3] = 8;
             },
-            u32 | i32 => {
-                elements[3] = 8;
-                elements[4] = 16;
+            u32, i32 => {
+                masks[3] = 8;
+                masks[4] = 16;
             },
-            u64 | i64 => {
-                elements[3] = 8;
-                elements[4] = 16;
-                elements[5] = 32;
+            u64, i64, usize => {
+                masks[3] = 8;
+                masks[4] = 16;
+                masks[5] = 32;
             },
-            u128 | i128 => {
-                elements[3] = 8;
-                elements[4] = 16;
-                elements[5] = 32;
-                elements[6] = 64;
+            u128, i128 => {
+                masks[3] = 8;
+                masks[4] = 16;
+                masks[5] = 32;
+                masks[6] = 64;
             },
-            else => @compileError("Invalid numeric value"),
+            else => @compileError("Invalid numeric value!"),
         }
     }
-    inline for (elements) |element| {
-        if (element) {
-            n |= n >> element;
+    inline for (masks) |null_mask| {
+        if (null_mask) |mask| {
+            n |= n >> mask;
         }
     }
 

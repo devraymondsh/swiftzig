@@ -16,7 +16,16 @@ pub fn build(b: *std.Build) !void {
         .name = "heap_tests",
         .root_source_file = .{ .path = "tests/heap.zig" },
     });
+    const math_tests = b.addTest(.{
+        .target = target,
+        .optimize = optimize,
+        .name = "math_tests",
+        .root_source_file = .{ .path = "tests/math.zig" },
+    });
+    math_tests.root_module.addImport("swift_lib", swift_lib_module);
     heap_tests.root_module.addImport("swift_lib", swift_lib_module);
     tests_step.dependOn(&b.addInstallArtifact(heap_tests, .{}).step);
+    tests_step.dependOn(&b.addInstallArtifact(math_tests, .{}).step);
     tests_step.dependOn(&b.addRunArtifact(heap_tests).step);
+    tests_step.dependOn(&b.addRunArtifact(math_tests).step);
 }

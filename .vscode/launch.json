@@ -2,12 +2,20 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "args": [],
             "type": "lldb",
             "request": "launch",
             "name": "Debug heap tests",
-            "program": "${workspaceFolder}/zig-out/bin/heap_tests",
+            "cwd": "${workspaceFolder}",
+            "program": "${workspaceFolder}/zig-out/bin/heap_tests"
+        },
+        {
             "args": [],
-            "cwd": "${workspaceFolder}"
-        }
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug math tests",
+            "cwd": "${workspaceFolder}",
+            "program": "${workspaceFolder}/zig-out/bin/math_tests"
+        },
     ]
 }
