@@ -1,4 +1,4 @@
-# Swift lib
+# SwiftZig
 This is a std library for Zig that's focused on performance and minimalism. It currently only supports x86_64 and aarch64 Linux. This project is open for contribution and extending this project to other operating systems. However, 32bit architectures will never be supported.
 
 ### Usage
