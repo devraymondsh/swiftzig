@@ -8,9 +8,9 @@ This is a std library for Zig that's focused on performance and minimalism. It c
     .name = "<your_apps_name>",
     .version = "<your_apps_vesion>",
     .dependencies = .{
-        // swiftzig v0.3.0
+        // swiftzig v0.4.0
         .swiftzig = .{
-            .url = "https://github.com/devraymondsh/swiftzig/archive/refs/tags/v0.3.0.tar.gz",
+            .url = "https://github.com/devraymondsh/swiftzig/archive/refs/tags/v0.4.0.tar.gz",
             .hash = "12201501ad4ac2d6827b2a293219ec8a49d7d12239895f17ad00c6209b0418dad3fe",
         },
     },

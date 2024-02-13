@@ -48,7 +48,6 @@ fn realloc(ctx: *anyopaque, buf: ?[*]align(8) u8, len: usize, new_len: usize) ?[
 
 /// Returns an allocator interface.
 pub fn allocator(self: *ArenaAllocator) Allocator {
-    @setCold(true);
     return Allocator{ .ptr = self, .realloc = realloc };
 }
 
