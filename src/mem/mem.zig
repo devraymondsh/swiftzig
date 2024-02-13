@@ -1,3 +1,10 @@
+// Export Allocators
+pub const Allocator = @import("Allocator.zig");
+pub const ArenaAllocator = @import("ArenaAllocator.zig");
+pub const ArrayList = @import("ArrayList.zig").ArrayList;
+pub const PageAllocator = @import("PageAllocator.zig");
+pub const FreelistAllocator = @import("FreelistAllocator.zig");
+
 /// Returns the length of a null-terminated string.
 pub fn strlen(ptr: [*:0]const u8) usize {
     var i: usize = 0;

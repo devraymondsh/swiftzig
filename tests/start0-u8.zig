@@ -1,6 +1,6 @@
-const swift_lib = @import("swift_lib");
+const swiftzig = @import("swiftzig");
 
-pub usingnamespace swift_lib.start;
+pub usingnamespace swiftzig.start;
 
 pub fn main() u8 {
     return 0;

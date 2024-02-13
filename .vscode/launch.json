@@ -5,9 +5,9 @@
             "args": [],
             "type": "lldb",
             "request": "launch",
-            "name": "Debug heap tests",
+            "name": "Debug mem tests",
             "cwd": "${workspaceFolder}",
-            "program": "${workspaceFolder}/zig-out/bin/heap_tests"
+            "program": "${workspaceFolder}/zig-out/bin/mem_tests"
         },
     ]
 }
