@@ -7,14 +7,11 @@ const Allocator = @This();
 pub const AllocErr = error{OutOfMemory};
 pub const ResizeErr = error{FailedToResize};
 
-pub const Vtable = struct {
-    alloc: *const fn (ctx: *anyopaque, len: usize) ?[*]align(8) u8,
-    resize: *const fn (ctx: *anyopaque, buf: [*]align(8) u8, len: usize, new_len: usize) bool,
-    free: *const fn (ctx: *anyopaque, buf: [*]align(8) u8, len: usize) void,
-};
-
 ptr: *anyopaque,
-vtable: *const Vtable,
+/// buf: ptr and len: non-zero and new_len: zero => free.
+/// buf: null and len: non-zero and new_len: zero => alloc.
+/// buf: ptr and len: non-zero and new_len: non-zero => realloc.
+realloc: *const fn (ctx: *anyopaque, buf: ?[*]align(8) u8, len: usize, new_len: usize) ?[*]align(8) u8,
 
 /// Aligns forward all types to make everything align on 8 bytes.
 fn align_len(size: comptime_int, len: usize) usize {
@@ -23,7 +20,7 @@ fn align_len(size: comptime_int, len: usize) usize {
 
 /// Allocates a slice. Types that aren't aligned on 8 bytes will be stored with padding.
 pub fn alloc(self: Allocator, comptime T: type, len: usize) AllocErr![]T {
-    if (self.vtable.alloc(self.ptr, align_len(@sizeOf(T), len))) |buf| {
+    if (self.realloc(self.ptr, null, align_len(@sizeOf(T), len), 0)) |buf| {
         return @as([*]T, @ptrFromInt(@intFromPtr(buf)))[0..len];
     }
 
@@ -37,12 +34,12 @@ pub fn create(self: Allocator, comptime T: type) AllocErr!T {
 
 /// Resizes the slice in place.
 pub fn resize(self: Allocator, comptime T: type, buf: []T, new_len: usize) ResizeErr![]T {
-    if (self.vtable.resize(
+    if (self.realloc(
         self.ptr,
         @as([*]align(8) u8, @ptrFromInt(@intFromPtr(buf.ptr))),
         buf.len,
         align_len(@sizeOf(T), new_len),
-    )) return buf[0..new_len];
+    )) |_| return buf[0..new_len];
 
     return ResizeErr.FailedToResize;
 }
@@ -69,9 +66,10 @@ pub fn dupe(self: Allocator, comptime T: type, buf: []const T) AllocErr![]T {
 
 /// Frees the slice.
 pub fn free(self: Allocator, buf: anytype) void {
-    self.vtable.free(
+    _ = self.realloc(
         self.ptr,
         @as([*]align(8) u8, @ptrFromInt(@intFromPtr(buf.ptr))),
         align_len(@sizeOf(@typeInfo(@TypeOf(buf)).Pointer.child), buf.len),
+        0,
     );
 }
