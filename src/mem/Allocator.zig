@@ -1,6 +1,6 @@
 const math = @import("../math.zig");
 
-/// This is an allocator interface which relies on storing data with 8-bit alignment. That means types
+/// This is an allocator interface which relies on storing data with 8-byte alignment. That means types
 /// that aren't aligned are stored with padding.
 const Allocator = @This();
 
